@@ -19,9 +19,10 @@ public class AuthorizationService {
 
     @Autowired
     private final UserReposiroty userReposiroty;
-
     @Autowired
     private final VerificationTokenRepository verificationTokenRepository;
+    @Autowired
+    private final EmailService emailService;
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
@@ -35,6 +36,11 @@ public class AuthorizationService {
         userReposiroty.save(user);
 
         String token = generateVerificationToken(user);
+        emailService.sendMail(
+                "example@gmail.com",
+                user.getEmail(),
+                "Please activate your account",
+                "link");
     }
 
     private String generateVerificationToken(User user) {
