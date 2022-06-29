@@ -1,6 +1,8 @@
 package com.example.redditclone.service;
 
 import com.example.redditclone.dto.RegisterRequest;
+import com.example.redditclone.exception.AuthorizationException;
+import com.example.redditclone.exception.UserNotFoundException;
 import com.example.redditclone.model.VerificationToken;
 import com.example.redditclone.repository.VerificationTokenRepository;
 import lombok.AllArgsConstructor;
@@ -32,6 +34,7 @@ public class AuthorizationService {
         user.setUsername(registerRequest.getUsername());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setEmail(registerRequest.getEmail());
+        user.setEnabled(false);
 
         userReposiroty.save(user);
 
@@ -40,7 +43,7 @@ public class AuthorizationService {
                 "example@gmail.com",
                 user.getEmail(),
                 "Please activate your account",
-                "link");
+                "http://localhost:8080/api/auth/accountVerification/" + token);
     }
 
     private String generateVerificationToken(User user) {
@@ -53,4 +56,16 @@ public class AuthorizationService {
         return token;
     }
 
+    public void verifyAccount(String token) {
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token)
+                .orElseThrow(() -> new AuthorizationException("Invalid token"));
+        fetchUserAndEnable(verificationToken);
+    }
+
+    private void fetchUserAndEnable(VerificationToken verificationToken) {
+        String username = verificationToken.getUser().getUsername();
+        User user = userReposiroty.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with name " + username + " not found"));
+        user.setEnabled(true);
+        userReposiroty.save(user);
+    }
 }

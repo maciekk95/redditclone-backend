@@ -25,18 +25,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated();
     }
 
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        super.configure(web);
-//        web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
-//    }
-//
-//    private HttpFirewall allowUrlEncodedSlashHttpFirewall() {
-//        StrictHttpFirewall firewall = new StrictHttpFirewall();
-//        firewall.setAllowUrlEncodedSlash(true);
-//        return firewall;
-//    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

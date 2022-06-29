@@ -1,6 +1,7 @@
 package com.example.redditclone.model;
 
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 
 @NoArgsConstructor
 @Setter
+@Getter
 @Entity(name = "tokens")
 public class VerificationToken {
 
@@ -17,6 +19,6 @@ public class VerificationToken {
     private Long id;
     private String token;
     private Date expiryDate;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private User user;
 }

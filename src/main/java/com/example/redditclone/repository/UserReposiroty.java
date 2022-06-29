@@ -3,4 +3,8 @@ package com.example.redditclone.repository;
 import com.example.redditclone.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserReposiroty extends JpaRepository<User, Long> {}
+import java.util.Optional;
+
+public interface UserReposiroty extends JpaRepository<User, Long> {
+    Optional<User> findByUsername(String username);
+}
