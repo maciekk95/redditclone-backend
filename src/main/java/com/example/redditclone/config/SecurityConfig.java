@@ -31,26 +31,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login");
     }
 
-//    @Override
-//    @Bean
-//    protected UserDetailsService userDetailsService() {
-//        UserDetails test1 = User.builder()
-//                .username("test1")
-//                .password(passwordEncoder().encode("test1"))
-//                .roles("USER")
-//                .build();
-//
-//        return new InMemoryUserDetailsManager(test1);
-//    }
-
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userService);
         auth.authenticationProvider(provider);
-
     }
 
     @Bean
