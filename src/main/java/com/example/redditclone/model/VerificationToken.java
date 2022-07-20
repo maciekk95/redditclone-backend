@@ -19,6 +19,6 @@ public class VerificationToken {
     private Long id;
     private String token;
     private Date expiryDate;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     private User user;
 }

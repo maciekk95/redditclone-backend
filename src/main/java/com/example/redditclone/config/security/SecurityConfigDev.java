@@ -1,28 +1,28 @@
-package com.example.redditclone.config;
+package com.example.redditclone.config.security;
 
-import com.example.redditclone.model.User;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.List;
+import javax.sql.DataSource;
 
+@Profile("dev")
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
-public class SecurityConfig {
+public class SecurityConfigDev {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -30,10 +30,24 @@ public class SecurityConfig {
     }
 
     @Bean
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+
+        UserDetails user = User.builder()
+                .username("admin")
+                .password(passwordEncoder().encode("admin"))
+                .authorities(new SimpleGrantedAuthority("ADMIN"))
+                .build();
+
+        manager.createUser(user);
+        return manager;
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http.authorizeHttpRequests(auth ->
-                auth
-                        .antMatchers("/api/**").permitAll()
+                auth.antMatchers("/api/**").permitAll()
                         .anyRequest().authenticated());
 
         http.formLogin(form ->
@@ -41,6 +55,7 @@ public class SecurityConfig {
 
         http.logout(logout ->
                 logout.logoutUrl("/logout").logoutSuccessUrl("/login"));
+
 
         http.csrf(csrf ->
                 csrf.disable());

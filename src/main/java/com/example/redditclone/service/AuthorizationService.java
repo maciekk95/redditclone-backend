@@ -8,11 +8,16 @@ import com.example.redditclone.repository.VerificationTokenRepository;
 import lombok.AllArgsConstructor;
 import com.example.redditclone.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.redditclone.repository.UserReposiroty;
+import com.example.redditclone.repository.UserRepository;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -20,7 +25,7 @@ import java.util.UUID;
 public class AuthorizationService {
 
     @Autowired
-    private final UserReposiroty userReposiroty;
+    private final UserRepository userRepository;
     @Autowired
     private final VerificationTokenRepository verificationTokenRepository;
     @Autowired
@@ -30,13 +35,15 @@ public class AuthorizationService {
 
     @Transactional
     public void singUp(RegisterRequest registerRequest) {
-        User user = new User();
-        user.setUsername(registerRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setEmail(registerRequest.getEmail());
-        user.setEnabled(false);
+        User user = User.builder()
+                .username(registerRequest.getUsername())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .email(registerRequest.getEmail())
+                .created(Date.from(Instant.now()))
+                .enabled(true)
+                .build();
 
-        userReposiroty.save(user);
+        userRepository.save(user);
 
         String token = generateVerificationToken(user);
         emailService.sendMail(
@@ -64,8 +71,8 @@ public class AuthorizationService {
 
     private void fetchUserAndEnable(VerificationToken verificationToken) {
         String username = verificationToken.getUser().getUsername();
-        User user = userReposiroty.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with name " + username + " not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with name " + username + " not found"));
         user.setEnabled(true);
-        userReposiroty.save(user);
+        userRepository.save(user);
     }
 }
