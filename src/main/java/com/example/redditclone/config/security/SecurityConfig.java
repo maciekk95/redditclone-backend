@@ -18,12 +18,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
 
-@Profile("prod")
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig {
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -35,9 +33,9 @@ public class SecurityConfig {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
 
         UserDetails user = User.builder()
-                .username("test1")
-                .password(passwordEncoder().encode("test1"))
-                .authorities(new SimpleGrantedAuthority("USER"))
+                .username("admin")
+                .password(passwordEncoder().encode("admin"))
+                .authorities(new SimpleGrantedAuthority("ADMIN"))
                 .build();
 
         manager.createUser(user);
@@ -48,7 +46,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(auth ->
-                auth.antMatchers("/api/**").permitAll()
+                auth.antMatchers("/hello").permitAll()
                         .anyRequest().authenticated());
 
         http.formLogin(form ->
