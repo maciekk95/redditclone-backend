@@ -1,32 +1,28 @@
 package com.example.redditclone.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
-import java.util.List;
+
 
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class Subreddit {
-
+public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "Name is required")
-    private String name;
-    @NotBlank(message = "Description is required")
+    @NotBlank(message = "Post name cannot be empty")
+    private String postName;
     private String description;
+    private Integer voteCount = 0;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
     private Date createdDate;
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
-    @OneToMany
-    private List<Post> posts;
+    @JoinColumn(name = "subreddit_id", referencedColumnName = "id")
+    private Subreddit subreddit;
 }

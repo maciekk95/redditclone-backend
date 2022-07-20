@@ -1,6 +1,8 @@
 package com.example.redditclone.service;
 
 import com.example.redditclone.dto.SubredditDto;
+import com.example.redditclone.exception.ResourceNotFoundException;
+import com.example.redditclone.mapper.SubredditMapper;
 import com.example.redditclone.model.Subreddit;
 import com.example.redditclone.repository.SubredditRepository;
 import lombok.AllArgsConstructor;
@@ -17,35 +19,29 @@ public class SubredditService {
 
     @Autowired
     private final SubredditRepository subredditRepository;
-
-    private Subreddit mapToEntity(SubredditDto subredditDto) {
-        return Subreddit.builder()
-                .name(subredditDto.getName())
-                .description(subredditDto.getDescription())
-                .build();
-    }
-
-    private SubredditDto mapToDto(Subreddit subreddit) {
-        return SubredditDto.builder()
-                .id(subreddit.getId())
-                .name(subreddit.getName())
-                .description(subreddit.getDescription())
-                .build();
-    }
+    @Autowired
+    private final SubredditMapper subredditMapper;
 
     @Transactional
     public SubredditDto save(SubredditDto subredditDto) {
-        Subreddit subreddit = subredditRepository.save(mapToEntity(subredditDto));
+        Subreddit subredditToSave = subredditMapper.mapDtoToSubreddit(subredditDto);
+        Subreddit subreddit = subredditRepository.save(subredditToSave);
         subredditDto.setId(subreddit.getId());
         return subredditDto;
+    }
+
+
+    @Transactional
+    public SubredditDto getSubreddit(Long id) {
+        Subreddit subreddit = subredditRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Subreddit with id" + id + " not found"));
+        return subredditMapper.mapSubredditToDto(subreddit);
     }
 
     @Transactional
     public List<SubredditDto> getAll() {
         return subredditRepository.findAll()
                 .stream()
-                .map(this::mapToDto)
+                .map(subredditMapper::mapSubredditToDto)
                 .collect(Collectors.toList());
     }
-
 }

@@ -2,20 +2,17 @@ package com.example.redditclone.service;
 
 import com.example.redditclone.dto.RegisterRequest;
 import com.example.redditclone.exception.AuthorizationException;
-import com.example.redditclone.exception.UserNotFoundException;
+import com.example.redditclone.exception.ResourceNotFoundException;
 import com.example.redditclone.model.VerificationToken;
 import com.example.redditclone.repository.VerificationTokenRepository;
 import lombok.AllArgsConstructor;
 import com.example.redditclone.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.redditclone.repository.UserRepository;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
@@ -71,7 +68,7 @@ public class AuthorizationService {
 
     private void fetchUserAndEnable(VerificationToken verificationToken) {
         String username = verificationToken.getUser().getUsername();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with name " + username + " not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User with name " + username + " not found"));
         user.setEnabled(true);
         userRepository.save(user);
     }
