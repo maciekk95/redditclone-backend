@@ -1,6 +1,5 @@
 package com.example.redditclone.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,8 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
-    private String username;
-    private String password;
-    private String email;
+public class PostDto {
+    private Long id;
+    private String name;
+    private String description;
+    private String subredditName;
+    private String userName;
 }

@@ -2,10 +2,9 @@ package com.example.redditclone.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class SubredditDto {
     private Long id;
     private String name;

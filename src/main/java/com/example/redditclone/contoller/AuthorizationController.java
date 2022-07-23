@@ -1,9 +1,8 @@
 package com.example.redditclone.contoller;
 
-import com.example.redditclone.dto.RegisterRequest;
+import com.example.redditclone.dto.RegisterDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,7 @@ public class AuthorizationController {
     AuthorizationService authorizationService;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> singUp(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<String> singUp(@RequestBody RegisterDto registerRequest) {
         authorizationService.singUp(registerRequest);
         return new ResponseEntity<>("User registration successful", HttpStatus.OK);
     }

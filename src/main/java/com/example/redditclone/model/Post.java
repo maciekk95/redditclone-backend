@@ -15,7 +15,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "Post name cannot be empty")
-    private String postName;
+    private String name;
     private String description;
     private Integer voteCount = 0;
     @ManyToOne(fetch = FetchType.LAZY)
