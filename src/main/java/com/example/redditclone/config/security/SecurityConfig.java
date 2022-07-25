@@ -49,10 +49,10 @@ public class SecurityConfig {
                 auth.antMatchers("/hello").permitAll()
                         .anyRequest().authenticated());
 
-        http.formLogin(form ->
-                form.loginPage("/login").permitAll());
+//        http.formLogin(form ->
+//                form.loginPage("/login").permitAll());
 
-//        http.httpBasic();
+        http.httpBasic();
 
         http.logout(logout ->
                 logout.logoutUrl("/logout").logoutSuccessUrl("/login"));

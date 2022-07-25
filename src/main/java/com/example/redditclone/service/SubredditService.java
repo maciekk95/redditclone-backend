@@ -26,7 +26,7 @@ public class SubredditService {
 
 
     @Transactional
-    public SubredditDto save(SubredditDto subredditDto) {
+    public SubredditDto addSubreddit(SubredditDto subredditDto) {
         User currentUser = authorizationService.getCurrentUser();
         Subreddit subredditToSave = subredditMapper.mapDtoToSubreddit(subredditDto, currentUser);
 
@@ -41,7 +41,7 @@ public class SubredditService {
     }
 
     @Transactional
-    public List<SubredditDto> getAll() {
+    public List<SubredditDto> getAllSubreddit() {
         return subredditRepository.findAll()
                 .stream()
                 .map(subredditMapper::mapSubredditToDto)

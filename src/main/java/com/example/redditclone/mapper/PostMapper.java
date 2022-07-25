@@ -16,6 +16,7 @@ public interface PostMapper {
 
     @Mapping(target = "subredditName", source = "subreddit.name")
     @Mapping(target = "userName", source = "user.username")
+    @Mapping(target = "name", source = "post.name")
     PostDto mapPostToDto(Post post);
 
     @Mapping(target = "createdDate", expression = "java(java.util.Date.from(java.time.Instant.now()))")
